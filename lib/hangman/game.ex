@@ -14,15 +14,22 @@ defmodule Hangman.Game do
   end
 
   def new_game() do
-    new_game(Dictionary.random_word)
+    Dictionary.random_word()
+    |>  new_game
   end
 
   def make_move(game = %{ game_state: state}, _guess) when state in [:won, :lost] do
     game
+    |> return_with_tally()
   end
 
   def make_move(game, guess) do
     accept_move(game, guess, MapSet.member?(game.used, guess), valid_guess(guess))
+    |> return_with_tally()
+  end
+
+  defp return_with_tally(game) do
+    { game, tally(game) }
   end
 
   def tally(game) do
